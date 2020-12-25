@@ -1,10 +1,10 @@
 # Automation_Project
 
-## AUTOMATION WITH PYTHON AND JSON
+## AUTOMATION WITH PYTHON
 
 this project is made to be used with the assistance of a launcher, or can be compiled later on the line.
 
-as for now, the project only consist of web access, and web search module.
+as for now, the project only consist of launchers, web access module, and web search module.
 
 __________________
 ### LAUNCHER
