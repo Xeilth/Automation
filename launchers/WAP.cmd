@@ -7,3 +7,4 @@ CD ..
 CD "%cd%\WAP"
 python WAP.py
 
+
