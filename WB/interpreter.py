@@ -1,12 +1,13 @@
 import json
 import webbrowser
+import time
 
-output = ""
 writeoutput = False
-index = 0
-urloutput = []
 spacing = "___________________________________________________________________________________________"
 defaultdata = '{"list":[{"name": "Google", "url": "https://www.google.com"}]}'
+loop = True
+max_eocreach = 50
+eocreach = 0
 
 def dataerror():
 		file = open("data.json", "w")
@@ -17,12 +18,11 @@ def dataerror():
 		if ans == "y":
 			print("As a Guide you can see the help menu below.\n")
 			helpmenu()
-			return
+			exit()
 		elif ans == "n":
 			print("Have fun using me again :)\n Restarting maybe needed.")
 			input("")
 			exit()
-			return
 
 def data_backup():
 	with open("data.json", "r") as currdata:
@@ -34,9 +34,32 @@ def data_backup():
 	del backupdata
 	return
 
+def load_data():
+	try:
+		del output, index, urloutput, data,
+	except UnboundLocalError:
+		#print("Unbound Local Error")
+		pass
+	output = ""
+	index = 0
+	urloutput = []
+	try:
+		with open("data.json", "r") as file:
+			data = json.load(file)
+			file.close()
+	except:
+		dataerror()
+		exit()
+
+	for i in data['list']:
+		output += f"{index}.Name: {i['name']}\n   Url: {i['url']}\n\n"
+		urloutput += [i['url']]
+		index += 1
+	return data, output, urloutput, index
+
 def helpmenu():
 	print("-----Help Menu-----")
-	print("\nStart:")
+	print("\nMain:")
 	print("Press any key to exit.\n[w]To write output\n[a]To append data\n[e]To edit data\n[0]Enter index to open url.\n[h]For help.")
 	print("\nedit data function:")
 	print("[a] To access append data function\npop <item index> to remove the item at the specified index.\n revert to revert to databackup.")
@@ -64,6 +87,7 @@ def add_data():
 	datalist = []
 	datadict['name'] = input("Name:")
 	datadict['url'] = input("Url:")
+	originaldata = data['list']
 	datalist += data['list']
 	datalist += [datadict]
 	data['list'] = datalist
@@ -83,19 +107,19 @@ def add_data():
 			json.dump(data, file, indent=4)
 		del datadict, datalist, uinp
 		loopbreak = True
-		return loopbreak
 	elif str.lower(uinp) == "n":
-		print("Input Discarded\nTo Exit, Enter at Confirm.\n")
+		print("Changes Discarded\nTo Exit, Enter at Confirm.\n")
 		del datadict, datalist, uinp
-		loopbreak = False		
-		return loopbreak
+		data['list'] = originaldata
+		loopbreak = False
 	else:
 		loopbreak = True
 		del datadict, datalist, uinp
-		return loopbreak
+		data['list'] = originaldata
+	return loopbreak
 
 def edit_data():
-	print(f"\nList Right Now:\n{spacing}")
+	print(f"\n{spacing}\nList Right Now:")
 	print(output)
 	print(spacing)
 	print("-Remove-\nTo remove an item, type \"pop <item index>\" without <>.")
@@ -110,6 +134,7 @@ def edit_data():
 		action = action.lower()
 
 		# Actions With Parameter Needs
+
 		if action == "pop":
 			idx = int(parameter)
 			with open("data.json", "r") as file:
@@ -131,22 +156,26 @@ def edit_data():
 				data_backup()
 				with open("data.json", "w") as file:
 					json.dump(data, file, indent=4)
-				del action, idx, inp, newlist
 			elif str.lower(uinp) == "n":
-				print("Change Discarded\nTo Exit, Enter at Confirm.\n")
-				del action, idx, inp, newlist
-			else:
-				del action, idx, inp, newlist
-			return loopbreak
+				print("Change Discarded\nTo Exit, Press enter at Confirm.\n")
+			del action, idx, inp, newlist
 	except ValueError:
 		action = uinp
 		action = action.lower()
 
 		# Actions Without The Needs of Parameter
+
 		if action == "revert" or action == "r":
 			try:
 				with open("databackup.json", "r") as backupfile:
 					backup = json.load(backupfile)
+					backupfile.close()
+					index = 0
+					backuplist = ""
+					for a in backup['list']:
+						backuplist += f"{index}.Name: {a['name']}\n   Url: {a['url']}\n\n"
+						index += 1
+					print(f"Backup Data : \n{backuplist}")
 					print("Backup file found, do you want to revert back to it?(y/n)")
 					print("Note: Be Careful reverting means overwriting the current data.")
 					inp = input(">").lower()
@@ -154,73 +183,60 @@ def edit_data():
 						print("Reverting back to backup...")
 						with open("data.json", "w") as file:
 							json.dump(backup, file, indent=4)
-						print("\nRevert Success!")
-						input("Restart required.")
+							file.close()
+						print("\nRevert Success!\n")
+						input("click ")
+						return
 					elif inp == "n":
 						print("Going Back to main menu.")
 						return
 					else:
 						input("Invalid Input")
 						exit()
-			except FileExistsError and FileNotFoundError:
+			except FileExistsError or FileNotFoundError:
 				print("You don't have any auto created backup.\nBackup will be created everytime you edit the data in through this code.")
-			finally:
-				backupfile.close()
-				file.close()
 
 		else:
 			print("Invalid Syntax.")
 
 	
 # ------------------------ End of functions ----------------------------
+while loop:
+	if eocreach == max_eocreach-1:
+		loop = False
+	data, output, urloutput, index = load_data()
 
-
-
-try:
-	with open("data.json", "r") as file:
-		data = json.load(file)
-		file.close()
-except:
-	dataerror()
-	exit()
-
-for i in data['list']:
-	output += f"{index}.Name: {i['name']}\n   Url: {i['url']}\n\n"
-	urloutput += [i['url']]
-	index += 1
-
-print(f"List:\n{output}")
-if output == "":
-	print("Your List Is Empty, Consider Adding Something Here :(")
-if writeoutput:
-	writeout()
-print("Press any key to exit.\n[h]For help.")
-print("[w]To write output\n[a]To append data\n[e]To edit data\n[0]Enter index to open url.")
-inp = input("./>")
-try:
-	inp = int(inp)
-except ValueError:
-	inp = str.lower(inp)
-	if inp == "w":
+	print(f"List:\n{output}")
+	if output == "":
+		print("Your List Is Empty, Consider Adding Something Here :(")
+	if writeoutput:
 		writeout()
-		input(".")
-	elif inp == "a":
-		loopbreak = add_data()
-		if not loopbreak:
+	print("Press any key to exit.\n[h]For help.")
+	print("[w]To write output\n[a]To append data\n[e]To edit data\n[0]Enter index to open url.")
+	inp = input(f"EOC:{eocreach}./>")
+	try:
+		inp = int(inp)
+		try:
+			webbrowser.open(urloutput[inp])
+		except ValueError:
+			print("Invalid index.")
+			input("Press any key to exit.")
+	except ValueError:
+		inp = str.lower(inp)
+		if inp == "w":
+			writeout()
+			input(".")
+		elif inp == "a":
+			loopbreak = add_data()
 			while not loopbreak:
 				loopbreak = add_data()
-	elif inp == "e":
-		edit_data()
-	elif inp == "h":
-		helpmenu()
-		input("Press any key to exit.")
-	elif inp == "help":
-		helpmenu()
-		input("Press any key to exit.")
-	exit()
+		elif inp == "e":
+			edit_data()
+		elif inp == "h" or inp == "help":
+			helpmenu()
+			input("Press any key to return.")
 
-try:
-	webbrowser.open(urloutput[inp])
-except:
-	print("Invalid index.")
-	input("Press any key to exit.")
+	eocreach += 1
+	print("\n\n\n")
+print(f"Woah! {max_eocreach} Loops? You are very dedicated!\nTime to stop though :)")
+time.sleep(5)
