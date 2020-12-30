@@ -1,9 +1,11 @@
 import json
 import webbrowser
 import time
+import os
 
 writeoutput = False
 spacing = "___________________________________________________________________________________________"
+emptyjson = {"list": []}
 defaultdata = '{"list":[{"name": "Google", "url": "https://www.google.com"}]}'
 loop = True
 max_eocreach = 50
@@ -50,14 +52,17 @@ def load_data():
 	except:
 		dataerror()
 		exit()
-
-	for i in data['list']:
-		output += f"{index}.Name: {i['name']}\n   Url: {i['url']}\n\n"
-		urloutput += [i['url']]
-		index += 1
+	try:
+		for i in data['list']:
+			output += f"{index}.Name: {i['name']}\n   Url: {i['url']}\n\n"
+			urloutput += [i['url']]
+			index += 1
+	except TypeError:
+		os.remove("./data.json")
 	return data, output, urloutput, index
 
 def helpmenu():
+	os.system("cls")
 	print("-----Help Menu-----")
 	print("\nMain:")
 	print("Press any key to exit.\n[w]To write output\n[a]To append data\n[e]To edit data\n[0]Enter index to open url.\n[h]For help.")
@@ -83,6 +88,9 @@ def writeout():
 	return writestate
 
 def add_data():
+	os.system("cls")
+	print(f"{spacing}\n--Append Data--\n----------")
+	print("-New Item-")
 	datadict = {}
 	datalist = []
 	datadict['name'] = input("Name:")
@@ -119,7 +127,8 @@ def add_data():
 	return loopbreak
 
 def edit_data():
-	print(f"\n{spacing}\nList Right Now:")
+	os.system("cls")
+	print(f"\n{spacing}\nEdit Data\n----------\nList Right Now:")
 	print(output)
 	print(spacing)
 	print("-Remove-\nTo remove an item, type \"pop <item index>\" without <>.")
@@ -136,29 +145,47 @@ def edit_data():
 		# Actions With Parameter Needs
 
 		if action == "pop":
-			idx = int(parameter)
-			with open("data.json", "r") as file:
-				data = json.load(file)
-				try:
-					data['list'].pop(idx)
-				except IndexError:
-					data['list'].pop()
-			print("\nNew List :\n\n")
-			newlist = ""
-			index = 0
-			for a in data['list']:
-				newlist += f"{index}.Name: {a['name']}\n   Url: {a['url']}\n\n"
-				index += 1
-			print(newlist)
-			print(spacing)
-			inp = input("Confirm?(y/n)")
-			if str.lower(inp) == "y":
-				data_backup()
-				with open("data.json", "w") as file:
-					json.dump(data, file, indent=4)
-			elif str.lower(uinp) == "n":
-				print("Change Discarded\nTo Exit, Press enter at Confirm.\n")
-			del action, idx, inp, newlist
+			try:
+				idx = int(parameter)
+				with open("data.json", "r") as file:
+					data = json.load(file)
+					try:
+						data['list'].pop(idx)
+					except IndexError:
+						print("Invalid Index.")
+				print("\nNew List :\n\n")
+				newlist = ""
+				index = 0
+				for a in data['list']:
+					newlist += f"{index}.Name: {a['name']}\n   Url: {a['url']}\n\n"
+					index += 1
+				print(newlist)
+				print(spacing)
+				inp = input("Confirm?(y/n)").lower()
+				if inp == "y":
+					data_backup()
+					with open("data.json", "w") as file:
+						json.dump(data, file, indent=4)
+				elif inp == "n":
+					print("Change Discarded\nTo Exit, Press enter at Confirm.\n")
+				del action, idx, inp, newlist
+			except:
+				if parameter.lower() == "all":
+					print("Are you sure to do this action [pop all] and remove all items?")
+					inp = input("Confirm?(y/n)").lower()
+					if inp == "y":
+						print("Removing all items.")
+						with open("data.json", "w") as file:
+							json.dump(emptyjson, file, indent=4)
+						print("Proccess Success. Returning in 5 seconds.")
+						time.sleep(5)
+						return
+					elif inp == "n":
+						print("Action abort. \nReturn in 5 seconds.")
+						time.sleep(5)
+						return
+					print("Pop All Here.")
+				return
 	except ValueError:
 		action = uinp
 		action = action.lower()
@@ -184,8 +211,8 @@ def edit_data():
 						with open("data.json", "w") as file:
 							json.dump(backup, file, indent=4)
 							file.close()
-						print("\nRevert Success!\n")
-						input("click ")
+						print("\nRevert Success!\nReturn in 5 seconds.")
+						time.sleep(5)
 						return
 					elif inp == "n":
 						print("Going Back to main menu.")
@@ -205,7 +232,7 @@ while loop:
 	if eocreach == max_eocreach-1:
 		loop = False
 	data, output, urloutput, index = load_data()
-
+	os.system("cls")
 	print(f"List:\n{output}")
 	if output == "":
 		print("Your List Is Empty, Consider Adding Something Here :(")
