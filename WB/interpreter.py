@@ -81,7 +81,6 @@ def helpmenu(command):
 	try:
 		command.lower()
 		cmdname = command.split(" ", 1)[1]
-
 		# Help - Open Url Command
 		try:
 			cmdname = int(cmdname)
@@ -176,8 +175,10 @@ def helpmenu(command):
 			print("Invalid Command Name.\nFor reference, please check the help menu.")
 			input("Press any key to return")
 		return
-	except ValueError:
+	except IndexError:
 		pass
+	except ValueError:
+		pass	
 
 	#General Help Menu
 	print("-----Help Menu-----")
@@ -320,7 +321,7 @@ while loop:
 				helpmenu(inpt)
 			elif cmd == "a" or cmd == "add" or cmd == "append":
 				recent_action = add_data(inpt)
-			elif cmd == "rmv" or cmd == "remove" or cmd == "pop":
+			elif cmd == "rmv" or cmd == "rem" or cmd == "remove" or cmd == "pop":
 				recent_action = remove_data(inpt)
 			elif cmd == "revert" or cmd == "rev" or cmd == "restore":
 				recent_action = revert_data()
