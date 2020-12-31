@@ -16,7 +16,7 @@ recent_action = ""
 exportfolder = "export"
 
 dataname = "data.json"
-backupdata = "databackup.json"
+backupdataname = "databackup.json"
 
 def dataerror():
 		file = open(dataname, "w")
@@ -38,7 +38,7 @@ def dataerror():
 def data_backup():
 	with open(dataname, "r") as currdata:
 		backupdata = json.load(currdata)
-	with open(backupdata, "w") as backup:
+	with open(backupdataname, "w") as backup:
 		json.dump(backupdata, backup, indent=4)
 	currdata.close()
 	backup.close()
@@ -253,7 +253,7 @@ def remove_data(parameter):
 
 def revert_data():
 	try:
-		with open(backupdata, "r") as backupfile:
+		with open(backupdataname, "r") as backupfile:
 			backup = json.load(backupfile)
 			backupfile.close()
 			with open(dataname, "w") as file:
