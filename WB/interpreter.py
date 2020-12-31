@@ -192,21 +192,28 @@ def helpmenu(command):
 
 
 def export_data(foldername):
-	os.system(f"md {foldername}")
-	write = open(f"./{foldername}/list-export.txt", "w")
-	write.write(output)
-	with open(f"./{foldername}/json-export.json", "w") as file:
-		json.dump(data, file, indent=4)
-		file.close()
-	write.close()
-	try:
-		inp
-		writestate = "Success"
-	except:
-		writestate = True
-	print(f"Write State: {writestate}\n")
-	act = "Export data."
-	return act
+	try:	
+		t = time.localtime()
+		currtime = time.strftime("%d-%m-%y %H.%M", t)
+		write = open(f"./{foldername}/{currtime}-list.txt", "w")
+		write.write(output)
+		with open(f"./{foldername}/{currtime}-data.json", "w") as file:
+			json.dump(data, file, indent=4)
+			file.close()
+		write.close()
+		
+		try:
+			inp
+			writestate = "Success"
+		except:
+			writestate = True
+		print(f"Write State: {writestate}\n")
+		act = "Export data."
+		return act
+	except FileNotFoundError:
+		os.system(f"md {foldername}")
+		return export_data(foldername)
+
 
 
 def add_data(item_info):
