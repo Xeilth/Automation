@@ -11,7 +11,7 @@ defaultdata = '{"list":[{"name": "Google", "url": "https://www.google.com"}]}'
 loop = True
 max_eocreach = 50
 eocreach = 0
-exitafteropenurl = False
+exitafteropenurl = True
 recent_action = ""
 exportfolder = "export"
 
@@ -79,8 +79,8 @@ def data_conv(data):
 def helpmenu(command):
 	os.system("cls")
 	try:
-		a, cmdname = command.split(" ", 1)
-		del a
+		command.lower()
+		cmdname = command.split(" ", 1)[1]
 
 		# Help - Open Url Command
 		try:
@@ -143,7 +143,8 @@ def helpmenu(command):
 			print(title)
 			print("Add command Adds new item into existing data.")
 			print("Add command can be accessed with [a], [add], and [append].")
-			print("Syntax: Add <name> <url>")
+			print("Syntax: Add <name>, <url>")
+			print("Ex: Add Google, https://www.google.com")
 			print("Add command requires both name and url arguments.\nIf called without argument returns error.")
 			print(spacing[0:len(title)])
 			input("Press any key to return.")
@@ -206,14 +207,19 @@ def export_data(foldername):
 	act = "Export data."
 	return act
 
+
 def add_data(item_info):
 	try:
 		os.system("cls")
-		a, name, url = item_info.split(" ", 2)
+		item_info = item_info.split(" ", 1)[1]
+		try:
+			item_name, item_url = item_info.split(", ", 1)
+		except:
+			item_name, item_url = item_info.split(",", 1)
 		datadict = {}
 		datalist = []
-		datadict['name'] = name
-		datadict['url'] = url
+		datadict['name'] = item_name
+		datadict['url'] = item_url
 		datalist += data['list']
 		datalist += [datadict]
 		data['list'] = datalist
@@ -231,7 +237,7 @@ def add_data(item_info):
 
 def remove_data(parameter):
 	try:
-		action, parameter = parameter.split()
+		parameter = parameter.split()[1]
 		with open(dataname, "r") as file:
 			data = json.load(file)
 			try:
@@ -285,9 +291,9 @@ while loop:
 	else:
 		print(f"Recent Act: {recent_action}")
 	print("Type exit to exit.\n[h]For help.")
-	inp = input(f"EOC:{eocreach}./>")
+	inpt = input(f"EOC:{eocreach}./>")
 	try:
-		inp = int(inp)
+		inp = int(inpt)
 		try:
 			webbrowser.open(urloutput[inp])
 			if exitafteropenurl:
@@ -296,7 +302,7 @@ while loop:
 			print("Invalid index.")
 			input("Press any key to return.")
 	except ValueError:
-		inp = str.lower(inp)
+		inp = str.lower(inpt)
 		# Commands Without Argument Dependencies
 		if inp == "export":
 			recent_action = export_data(exportfolder)
@@ -311,11 +317,11 @@ while loop:
 		try:
 			cmd = inp.split(" ")[0]
 			if cmd == "h" or cmd == "help":
-				helpmenu(inp)
+				helpmenu(inpt)
 			elif cmd == "a" or cmd == "add" or cmd == "append":
-				recent_action = add_data(inp)
+				recent_action = add_data(inpt)
 			elif cmd == "rmv" or cmd == "remove" or cmd == "pop":
-				recent_action = remove_data(inp)
+				recent_action = remove_data(inpt)
 			elif cmd == "revert" or cmd == "rev" or cmd == "restore":
 				recent_action = revert_data()
 		except ValueError:
