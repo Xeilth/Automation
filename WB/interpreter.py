@@ -86,6 +86,7 @@ def helpmenu(command):
 			cmdname = int(cmdname)
 			if not cmdname == 0:
 				helpmenu("help 0")
+				return
 		except ValueError:
 			pass
 
@@ -160,7 +161,7 @@ def helpmenu(command):
 			input("Press any key to return.")
 
 		# Help - Revert Command
-		elif cmdname == "Revert":
+		elif cmdname == "revert" or cmdname == "restore":
 			title = "Help > Revert Command"
 			print(title)
 			print("Revert command revert the current data to the backup data.")
@@ -266,10 +267,11 @@ def remove_data(parameter):
 
 
 def revert_data():
-	try:
+	try:	
 		with open(backupdataname, "r") as backupfile:
 			backup = json.load(backupfile)
 			backupfile.close()
+			data_backup()
 			with open(dataname, "w") as file:
 				json.dump(backup, file, indent=4)
 				file.close()
