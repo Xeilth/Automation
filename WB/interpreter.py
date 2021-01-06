@@ -182,7 +182,7 @@ def helpmenu(command):
 			input("Press any key to return.")
 
 		# Help - Revert Command
-		elif cmdname == "revert" or cmdname == "restore":
+		elif cmdname == "revert" or cmdname == "restore" cmdname == "rev":
 			title = "Help > Revert Command"
 			print(title)
 			print("Revert command revert the current data to the backup data.")
@@ -241,7 +241,7 @@ def export_data(foldername):
 def add_data(item_info):
 	try:
 		os.system("cls")
-		item_info = item_info.split(" ", 1)[1]
+		_, item_info = item_info.split(" ", 1)
 		try:
 			item_name, item_url = item_info.split(", ", 1)
 		except:
@@ -263,7 +263,7 @@ def add_data(item_info):
 def insert_data(cmd_info):
 	try:
 		os.system("cls")
-		cmd_info = cmd_info.split(" ", 1)[1]
+		_, cmd_info = cmd_info.split(" ", 1)
 		index, item_info = cmd_info.split(" ", 1)
 		try:
 			item_name, item_url = item_info.split(", ", 1)
