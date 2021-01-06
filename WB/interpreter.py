@@ -14,9 +14,11 @@ eocreach = 0
 exitafteropenurl = True
 recent_action = ""
 exportfolder = "export"
+seperator = [", ", ","]
 
 dataname = "data.json"
 backupdataname = "databackup.json"
+
 
 def dataerror():
 		file = open(dataname, "w")
@@ -28,10 +30,12 @@ def dataerror():
 			print("As a Guide you can see the help menu below.\n")
 			generalhelp = "help"
 			helpmenu(generalhelp)
+			input("\n\nPress any key to exit.")
 			exit()
 		elif ans == "n":
 			print("Have fun using me again :)\nPress any key to return.")
 			input("")
+			time.sleep(2)
 			return
 
 
@@ -48,7 +52,6 @@ def data_backup():
 
 def load_data():
 	output = ""
-	index = 0
 	urloutput = []
 	try:
 		with open(dataname, "r") as file:
@@ -58,22 +61,14 @@ def load_data():
 		dataerror()
 		exit()
 	try:
-		for i in data['list']:
-			output += f"{index}.Name: {i['name']}\n   Url: {i['url']}\n\n"
+		for ind, i in enumerate(data['list']):
+			output += f"{ind}.Name: {i['name']}\n   Url: {i['url']}\n\n"
 			urloutput += [i['url']]
-			index += 1
 	except TypeError:
-		os.remove("./dataname")
-	return data, output, urloutput, index
-
-
-def data_conv(data):
-	output = ""
-	index = 0
-	for i in data['list']:
-		output += f"{index}.Name: {i['name']}\n   Url: {i['url']}\n\n"
-		index += 1
-	return output
+		os.remove(f"./{dataname}")
+		act = "Reset data."
+		return data, output, urloutput, act
+	return data, output, urloutput
 
 
 def helpmenu(command):
@@ -149,6 +144,32 @@ def helpmenu(command):
 			print(spacing[0:len(title)])
 			input("Press any key to return.")
 
+		# Help - Insert Command
+		elif cmdname == "ins" or cmdname == "insert":
+			title = "Help > Insert Command"
+			print(title)
+			print("Insert command inserts new item into specified index on existing data.")
+			print("Insert command can be accessed with [ins] and [insert].")
+			print("Syntax: Insert <destination index> <name>, <url>")
+			print("Ex: Insert 5 google, https://www.google.com")
+			print("This line will place the item into index 5 and the original index 5 is moved to index 6.")
+			print("Insert command requires all three of the listed arguments.")
+			print(spacing[0:len(title)])
+			input("Press any key to return.")
+
+		# Help - Replace Command
+		elif cmdname == "rep" or cmdname == "replace":
+			title = "Help > Replace Command"
+			print(title)
+			print("Replace command replaces an item with another item but keeping the original item.")
+			print("Replace command can be accessed with [rep] and [replace].")
+			print("Syntax: Replace <origin index> <destination index>")
+			print("Ex: Replace 5 0")
+			print("This command will replace index 0 with index 5, index 0 will be pushed to index 1")
+			print("Replace command requires both destination and origin arguments.")
+			print(spacing[0:len(title)])
+			input("Press any key to return.")
+
 		# Help - Remove Command
 		elif cmdname == "remove" or cmdname == "rmv" or cmdname == "pop":
 			title = "Help > Remove Command"
@@ -186,16 +207,17 @@ def helpmenu(command):
 	# First print for General commands
 	print("[help]To show this help menu.\n[export]To Export List\n[0]Enter index to open url.")
 	# Second print for data editing commands
-	print("[add]To add data\n[remove]To remove data\n[revert]To revert to backup")
+	print("[add]To add data\n[insert]To insert data\n[replace]To replace data")
+	print("[remove]To remove data\n[revert]To revert to backup")
 	# Third print for notes and similar things
-	print("Type 'help <commandname>' without the <> for command details.")
+	print("Type 'help <command name>' without the <> for command details.")
 	return
 
 
 def export_data(foldername):
 	try:	
 		t = time.localtime()
-		currtime = time.strftime("%d-%m-%y %H.%M", t)
+		currtime = time.strftime("%d-%m-%y %H.%M.%S", t)
 		write = open(f"./{foldername}/{currtime}-list.txt", "w")
 		write.write(output)
 		with open(f"./{foldername}/{currtime}-data.json", "w") as file:
@@ -212,9 +234,8 @@ def export_data(foldername):
 		act = "Export data."
 		return act
 	except FileNotFoundError:
-		os.system(f"md {foldername}")
+		os.system(f'md "{foldername}"')
 		return export_data(foldername)
-
 
 
 def add_data(item_info):
@@ -225,21 +246,64 @@ def add_data(item_info):
 			item_name, item_url = item_info.split(", ", 1)
 		except:
 			item_name, item_url = item_info.split(",", 1)
-		datadict = {}
-		datalist = []
-		datadict['name'] = item_name
-		datadict['url'] = item_url
-		datalist += data['list']
-		datalist += [datadict]
-		data['list'] = datalist
+		datadict = {'name': item_name, 'url': item_url}
+		data['list'].append(datadict)
 		data_backup()
 		with open(dataname, "w") as file:
 			json.dump(data, file, indent=4)
-		del datadict, datalist
+		del datadict
 		act = "Added an item to the list."
 		return act
 	except ValueError:
 		print("Required Arguments: Name, Url.")
+		input("Press any key to return.")
+	return
+
+
+def insert_data(cmd_info):
+	try:
+		os.system("cls")
+		cmd_info = cmd_info.split(" ", 1)[1]
+		index, item_info = cmd_info.split(" ", 1)
+		try:
+			item_name, item_url = item_info.split(", ", 1)
+		except:
+			item_name, item_url = item_info.split(",", 1)
+		datadict = {'name': item_name, 'url': item_url}
+		data['list'].insert(int(index), datadict)
+		data_backup()
+		with open(dataname, "w") as file:
+			json.dump(data, file, indent=4)
+		del datadict
+		act = "Inserted an item to the list."
+		return act
+	except ValueError:
+		print("Required Arguments: Destination Index, Name, Url.")
+		input("Press any key to return.")
+	return
+
+
+def replace_data(cmd_info):
+	try:
+		_, origin, destination = cmd_info.split()
+
+		with open(dataname, "r") as file:
+			data = json.load(file)
+			try:
+				datadict = data['list'][int(origin)]
+				data['list'].pop(int(origin))
+				data['list'].insert(int(destination), datadict)
+				data_backup()
+				with open(dataname, "w") as file:
+					json.dump(data, file, indent=4)
+				act = "Replaced an item."
+				return act
+			except IndexError:
+				print("Invalid Index.\nReturn in 2 seconds.")
+				time.sleep(2)
+				return
+	except ValueError:
+		print("Required Arguments: Destination Index, Origin Index.")
 		input("Press any key to return.")
 	return
 
@@ -279,17 +343,24 @@ def revert_data():
 			return act
 	except FileExistsError or FileNotFoundError:
 		print("You don't have any auto created backup.")
-		print("Backup will be created everytime you edit the data in through this code.")
+		print("Backup will be created every time you edit the data in through this code.")
 		input("Press any key to return.")
 		return
 
 # ------------------------ End of functions ----------------------------
 
+# os.system("color 0c")
+# os.system("title Interpreter")
+
 
 while loop:
 	if eocreach == max_eocreach-1:
 		loop = False
-	data, output, urloutput, index = load_data()
+	loaded_data = load_data()
+	try:
+		data, output, urloutput, recent_action = load_data()
+	except ValueError:
+		data, output, urloutput = load_data()
 	os.system("cls")
 	print(f"List:\n{output}")
 	if output == "":
@@ -330,6 +401,10 @@ while loop:
 				helpmenu(inpt)
 			elif cmd == "a" or cmd == "add" or cmd == "append":
 				recent_action = add_data(inpt)
+			elif cmd == "ins" or cmd == "insert":
+				recent_action = insert_data(inpt)
+			elif cmd == "rep" or cmd == "replace":
+				recent_action = replace_data(inpt)
 			elif cmd == "rmv" or cmd == "rem" or cmd == "remove" or cmd == "pop":
 				recent_action = remove_data(inpt)
 			elif cmd == "revert" or cmd == "rev" or cmd == "restore":
