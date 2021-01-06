@@ -171,7 +171,7 @@ def helpmenu(command):
 			input("Press any key to return.")
 
 		# Help - Remove Command
-		elif cmdname == "remove" or cmdname == "rmv" or cmdname == "pop":
+		elif cmdname == "remove" or cmdname == "rmv" or cmdname == "pop" or cmdname == "rem":
 			title = "Help > Remove Command"
 			print(title)
 			print("Remove command removes the specified item.")
@@ -310,7 +310,7 @@ def replace_data(cmd_info):
 
 def remove_data(parameter):
 	try:
-		parameter = parameter.split()[1]
+		_, parameter = parameter.split()
 		with open(dataname, "r") as file:
 			data = json.load(file)
 			try:
