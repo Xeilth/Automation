@@ -182,7 +182,7 @@ def helpmenu(command):
 			input("Press any key to return.")
 
 		# Help - Revert Command
-		elif cmdname == "revert" or cmdname == "restore" cmdname == "rev":
+		elif cmdname == "revert" or cmdname == "restore" or cmdname == "rev":
 			title = "Help > Revert Command"
 			print(title)
 			print("Revert command revert the current data to the backup data.")
