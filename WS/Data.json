@@ -1,15 +1,7 @@
-{
-	"defaultindex" : 0,
-	"seperator" : [" ", ".", ",", "-", "_", "/", "?"],
-	"urlinfo" : [
-		{"name":"Google", "url":"https://www.google.com/search?q=", "letter1":" ", "letter2":"+"},
-		{"name":"Youtube", "url":"https://www.youtube.com/results?search_query=", "letter1":" ", "letter2":"+"},
-		{"name":"DuckDuckGo", "url":"https://duckduckgo.com/?q=", "letter1":" ", "letter2":"+"},
-		{"name":"osu!", "url":"https://osu.ppy.sh/beatmapsets?q=", "letter1":" ", "letter2":"%20"},
-		{"name":"MAL", "url":"https://myanimelist.net/search/all?q=", "letter1":" ", "letter2":"%20"}
-		
-	],
-	"unlistedurlinfo" : [
-	],
-	"Note" : "Dont Forget to Place The Coma[,]."
-}
+[
+	{"url": "https://www.google.com/search?q=", "keywords": ["google", "ggl"]},
+	{"url": "https://www.youtube.com/results?search_query=", "keywords": ["youtube", "yt"]},
+	{"url": "https://www.duckduckgo.com/?q=", "keywords": ["duckduckgo", "duck", "ddg"]},
+	{"url": "https://osu.ppy.sh/beatmapsets?q=", "keywords": ["osu", "os"]},
+	{"url": "https://myanimelist.net/search/all?q=", "keywords": ["myanimelist", "mal"]}
+]

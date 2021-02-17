@@ -1,52 +1,37 @@
+import json, webbrowser
+url_table = {}
+print(f'{"Keyword list":-^50}')
+for item in json.load(open("Data.json", "r")):
+    print(f'''{f"{'|'.join(item['keywords'])}":<20} --> {item['url']:>25}''')
+    url_table.update({key: item['url'] for key in item['keywords']})
+print(f"{'':-<50}")
+while True:
+    try:webbrowser.open_new(url_table[input("Keyword:")]) and exit()
+    except KeyError: print("Invalid Key.")
+
+# Original
+"""
 import webbrowser
 import json
 
-with open("Data.json") as jsonFile:
-    data = json.load(jsonFile)
-    jsonFile.close()
+with open("Data.json", "r") as f:
+    data = json.load(f)
 
-keywordlist = data["keywordlist"]
-codelist = data["codelist"]
-namelist = data["namelist"]
+url_referer = {}
 
-try:
-    defaultname = data["defaultname"]
-    namelist["default"] = namelist.get(defaultname, "https://www.google.com")
-except TypeError:
-    print("Invalid Defaultname in json, defaultname doesn't exist in namelist.\nUsing Absolute Default.")
-except KeyError:
-    print("Default Name Value Isn't Detected In json.\nUsing Absolute Default.")
-
-'''
-# Displaying Dictionary
-print(keywordlist)
-keylistsname = ["Keyword List", "Code List"]
-keylists = [keywordlist, codelist]
-a = 0
-while a <= 1:
-    print(keylistsname[a])
-    for i in keylists[a]:
-        print(i + " As " + keylists[a][i])
-    print("")
-    a += 1
-
-print("Name List")
-for i in namelist:
-    print(i + " As " + namelist[i])
-'''
-
-def urlconvert():
-    nameinput = str.lower(input("Key : "))
-    key = keywordlist.get(nameinput, nameinput)
-    if key == nameinput:
-        key = codelist.get(key, key)
-    url = namelist.get(key, "Invalid")
-    if url == "Invalid":
-        url = namelist.get("default")
-        print("invalid Name, Visiting Default Site " + url)
-    print("Visiting " + url)
-    webbrowser.open_new_tab(url)
+print(f'{"Keyword list":-^50}')
+for url_data in data:
+    keywords = url_data['keywords']
+    url = url_data['url']
+    print(f'''{f"{'|'.join(keywords)}":<20} --> {url:>25}''')
+    url_referer.update({key: url for key in keywords})
 
 
-urlconvert()
-#webbrowser.Chrome(urlconvert())
+while True:
+    key = input("Key:")
+    try:
+        webbrowser.open_new(url_referer[key])
+        exit()
+    except KeyError:
+        print("Invalid Key.")
+"""

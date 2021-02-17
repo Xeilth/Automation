@@ -1,18 +1,8 @@
-{
-	"defaultname" : "google",
-	"keywordlist" : {"yt": "youtube", "mal": "myanimelist", "tk": "tokopedia", "toped": "tokopedia", "duck":  "duckduckgo"},
-
-	"codelist" : {"0": "google", "1": "youtube", "2": "duckduckgo", "3": "osu", "4": "myanimelist"},
-
-	"namelist" : {
-		"google": "https://www.google.com",
-		"youtube": "https://www.youtube.com",
-		"duckduckgo": "https://duckduckgo.com",
-		"osu": "https://osu.ppy.sh",
-		"myanimelist": "https://myanimelist.net",
-
-		"amazon": "https://www.amazon.com",
-		"tokopedia": "https://www.tokopedia.com"},
-
-	"Note 1." : "Dont Forget to Place The Coma[,]."
-}
+[
+	{"url": "https://www.google.com", "keywords": ["google", "ggl"]},
+	{"url": "https://www.youtube.com", "keywords": ["youtube", "yt"]},
+	{"url": "https://duckduckgo.com", "keywords": ["duckduckgo", "duck", "ddg"]},
+	{"url": "https://osu.ppy.sh", "keywords": ["osu", "os"]},
+	{"url": "https://myanimelist.net", "keywords": ["myanimelist", "mal"]},
+	{"url": "https://www.tokopedia.com", "keywords": ["tokopedia", "toped", "tk"]}
+]
